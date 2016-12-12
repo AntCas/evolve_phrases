@@ -45,21 +45,21 @@ def gen_rand_org(length):
 	return ''.join(organism)
 
 # return a dictionary of scored organisms
-def score_generation(generation):
+def score_generation(generation, target):
 	scored_generation = {}
 	for i in generation:
 		scored_generation[i] = fitness(i, target)
 	return scored_generation
 
 # generate the next generation of the algorithm
-def gen_next_generation(generation, length):
+def gen_next_generation(generation, target):
 	if len(generation) is 0:
-		return gen_seed_generation(length)
+		return gen_seed_generation(len(target))
 	else:
 		# score
-		scored_generation = score_generation(generation)
+		scored_generation = score_generation(generation, target)
 		# breed
-		return gen_seed_generation(length)
+		return gen_seed_generation(len(target))
 
 # Use a genetic algorithm to generate the target word
 def run_genetic_word_finder(target):
@@ -67,13 +67,15 @@ def run_genetic_word_finder(target):
 	generation = []
 	found = False
 	while not found:
-		generation = gen_next_generation(generation, len(target))
+		generation = gen_next_generation(generation, target)
 		num_generations += 1
 
 		# print the current status of the algorithm
-		print "Current generation: " + num_generations
+		print "\nCurrent generation: " + str(num_generations)
+		for i in generation:
+			print i
 
-		if includes_target(generation):
+		if target in generation:
 			found = True
 
 	print "Target Found"
