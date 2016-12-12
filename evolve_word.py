@@ -2,10 +2,10 @@ import random
 
 # ---- Constants/Control Variables ----
 
-SIZE_OF_GENERATION = 20 # number of organisms per generation
-MUTATION_RATE = .10 # Chance of a character randomly mutating
-MIN_CHAR = 32 # ' '
-MAX_CHAR = 126 # '~'
+SIZE_OF_GENERATION = 200 # number of organisms per generation
+MUTATION_RATE = .01 # Chance of a character randomly mutating
+MIN_CHAR = 63 # ' '
+MAX_CHAR = 122 # '~'
 CHAR_RANGE = MAX_CHAR - MIN_CHAR
 
 # ---- Functions -----
@@ -35,6 +35,15 @@ def gen_seed_generation(length):
 		generation[i] = gen_rand_org(length)
 	return generation
 	
+# returns a random character within the range (w/ addition of ' ', and '.')
+def rand_char():
+	c = random.randint(MIN_CHAR, MAX_CHAR)
+	if c == 63:
+		c = 32
+	elif c == 64:
+		c = 46
+	return chr(c)
+
 # generate a random organism length characters long
 def gen_rand_org(length):
 	# We create an array the length of the target word which will then be
@@ -42,7 +51,8 @@ def gen_rand_org(length):
 	# for every iteration of the loop (which .append() would do)
 	organism = [''] * length
 	for i in xrange(length):
-		organism[i] = chr(random.randint(MIN_CHAR, MAX_CHAR))
+		#organism[i] = chr(random.randint(MIN_CHAR, MAX_CHAR))
+		organism[i] = rand_char()
 	return ''.join(organism)
 
 # return a dictionary of scored organisms
@@ -52,7 +62,8 @@ def score_generation(generation, target):
 # randomly mutates a character some percentage of the time specfied by the rate
 def mutate(character, rate):
 	if random.random() < rate:
-		return chr(random.randint(MIN_CHAR, MAX_CHAR))
+		#return chr(random.randint(MIN_CHAR, MAX_CHAR))
+		return rand_char()
 	else:
 		return character
 
@@ -123,10 +134,10 @@ def run_genetic_word_finder(target):
 		num_generations += 1
 
 		# print the current status of the algorithm
-		avg_fitness = sum(w for c,w in score_generation(generation, target)) / float(len(generation))
-		print "\nCurrent generation: " + str(num_generations) + " | average fitness: " + str(avg_fitness)
 		for i in generation:
 			print i
+		avg_fitness = sum(w for c,w in score_generation(generation, target)) / float(len(generation))
+		print "\nCurrent generation: " + str(num_generations) + " | average fitness: " + str(avg_fitness)
 
 		if target in generation:
 			found = True
@@ -149,4 +160,4 @@ print fitness("t", "t") # this should be 1.0 100% the same
 #for i in xrange(10,15):
 #	print gen_seed_generation(i)
 
-print run_genetic_word_finder("cat and dog")
+print run_genetic_word_finder("cat")
