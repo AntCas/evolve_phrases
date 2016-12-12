@@ -135,12 +135,12 @@ def run_genetic_word_finder(target):
 
 # ---- Testing Section -----
 
-print fitness("test", "tart")
-print fitness("test", "Farm")
-print fitness("a", "b") # this should be .98936
-print fitness(chr(32), chr(126)) # this should be 0.0 0% the same
-print fitness("test", "test") # this should be 1.0 100% the same
-print fitness("t", "t") # this should be 1.0 100% the same
+# print fitness("test", "tart")
+# print fitness("test", "Farm")
+# print fitness("a", "b") # this should be .98936
+# print fitness(chr(32), chr(126)) # this should be 0.0 0% the same
+# print fitness("test", "test") # this should be 1.0 100% the same
+# print fitness("t", "t") # this should be 1.0 100% the same
 
 
 #for i in xrange(10):
