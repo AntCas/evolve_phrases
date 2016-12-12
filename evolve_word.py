@@ -2,7 +2,7 @@ import random
 
 # ---- Constants/Control Variables ----
 
-SIZE_OF_GENERATION = 1000 # number of organisms per generation
+SIZE_OF_GENERATION = 200 # number of organisms per generation
 MUTATION_RATE = .01 # Chance of a character randomly mutating
 MIN_CHAR = 63 # ' '
 MAX_CHAR = 122 # '~'
@@ -10,11 +10,9 @@ CHAR_RANGE = MAX_CHAR - MIN_CHAR
 
 # ---- Functions -----
 
-# Calculate the fitness of a certain string (the organism) from the target string
+# fitness is the percentage of correct characters of an organism vs the target
 def fitness(organism, target):
 	fitness = 0 # fitness of the word
-
-	# fitness is the percentage of correct characters
 	for i in xrange(len(organism)):
 		if organism[i] == target[i]:
 			fitness += 1
@@ -93,7 +91,6 @@ def select_father(gene_pool, mother):
 			return c
 		upto += w
 	print gene_pool
-	print "Diversity has been depleted"
 	assert False, "Shouldn't get here" # No more diversity left in the gene pool
 
 # generate the next generation of the algorithm
