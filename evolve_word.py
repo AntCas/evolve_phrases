@@ -3,6 +3,7 @@ import random
 # ---- Constants/Control Variables ----
 
 SIZE_OF_GENERATION = 20 # number of organisms per generation
+MUTATION_RATE = .01 # Chance of a character randomly mutating
 MIN_CHAR = 32 # ' '
 MAX_CHAR = 126 # '~'
 CHAR_RANGE = MAX_CHAR - MIN_CHAR
@@ -51,15 +52,43 @@ def score_generation(generation, target):
 		scored_generation[i] = fitness(i, target)
 	return scored_generation
 
+# assigns each organism a breeding potential based on its relative score
+def gen_gene_pool(scored_generation):
+	return scored_generation
+
+# mutates a character based on MUTATION_RATE
+
+# breeds two organisms
+def breed(mother, father, target):
+	if len(mother) != len(father):
+		print "LENGTH ERROR"
+		exit(1)
+
+	child = [""] * len(mother)
+	for i in xrange(len(mother)):
+		child[i] = mother[i] if fitness(mother, target) >= fitness(father, target) else father[i]
+		child[i] = mutate(child[i], MUTATION_RATE)
+
+	return ''.join(child)
+
 # generate the next generation of the algorithm
 def gen_next_generation(generation, target):
 	if len(generation) is 0:
 		return gen_seed_generation(len(target))
 	else:
+		next_generation = [""] * SIZE_OF_GENERATION
+
 		# score
 		scored_generation = score_generation(generation, target)
+
+		# create the gene pool (roulette wheel)
+		gene_pool = gen_gene_pool(scored_generation)
+
 		# breed
-		return gen_seed_generation(len(target))
+		for i in xrange(len(generation)):
+			next_generation[i] = breed(i, gene_pool, target)
+
+		return next_generation
 
 # Use a genetic algorithm to generate the target word
 def run_genetic_word_finder(target):
@@ -96,4 +125,4 @@ print fitness("t", "t") # this should be 1.0 100% the same
 #for i in xrange(10,15):
 #	print gen_seed_generation(i)
 
-print run_genetic_word_finder("test")
+print run_genetic_word_finder("cat")
