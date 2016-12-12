@@ -1,9 +1,13 @@
 import random
 
+# ---- Constants/Control Variables ----
+
 SIZE_OF_GENERATION = 20 # number of organisms per generation
 MIN_CHAR = 32 # ' '
 MAX_CHAR = 126 # '~'
 CHAR_RANGE = MAX_CHAR - MIN_CHAR
+
+# ---- Functions -----
 
 # Calculate the fitness of a certain string (the organism) from the target string
 def fitness(organism, target):
@@ -40,14 +44,39 @@ def gen_rand_org(length):
 		organism[i] = chr(random.randint(MIN_CHAR, MAX_CHAR))
 	return ''.join(organism)
 
+# return a dictionary of scored organisms
+def score_generation(generation):
+	scored_generation = {}
+	for i in generation:
+		scored_generation[i] = fitness(i, target)
+	return scored_generation
+
+# generate the next generation of the algorithm
+def gen_next_generation(generation, length):
+	if len(generation) is 0:
+		return gen_seed_generation(length)
+	else:
+		# score
+		scored_generation = score_generation(generation)
+		# breed
+		return gen_seed_generation(length)
+
 # Use a genetic algorithm to generate the target word
 def run_genetic_word_finder(target):
-	generation = gen_seed_generation(len(target))
+	num_generations = 0
+	generation = []
+	found = False
+	while not found:
+		generation = gen_next_generation(generation, len(target))
+		num_generations += 1
 
-	# Score of each organism in the generation
-	print target
-	for i in generation:
-		print i + " : " + str(fitness(i, target))
+		# print the current status of the algorithm
+		print "Current generation: " + num_generations
+
+		if includes_target(generation):
+			found = True
+
+	print "Target Found"
 
 # ---- Testing Section -----
 
