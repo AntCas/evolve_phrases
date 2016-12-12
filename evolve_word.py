@@ -35,7 +35,7 @@ def gen_seed_generation(length):
 		generation[i] = gen_rand_org(length)
 	return generation
 	
-# generate a random organism of length
+# generate a random organism length characters long
 def gen_rand_org(length):
 	# We create an array the length of the target word which will then be
 	# modified in order to avoid the overhead of creating a new array/string
@@ -47,14 +47,7 @@ def gen_rand_org(length):
 
 # return a dictionary of scored organisms
 def score_generation(generation, target):
-	scored_generation = {}
-	for i in generation:
-		scored_generation[i] = fitness(i, target)
-	return scored_generation
-
-# assigns each organism a breeding potential based on its relative score
-def gen_gene_pool(scored_generation):
-	return scored_generation
+	return [(organism, fitness(organism, target)) for organism in generation]
 
 # randomly mutates a character some percentage of the time specfied by the rate
 def mutate(character, rate):
@@ -79,12 +72,26 @@ def breed(mother, father):
 
 	return ''.join(child)
 
+# assigns each organism a breeding potential based on its relative score
+def gen_gene_pool(scored_generation):
+	# each organism gets exaclty the share of the gene pool it contributes
+	total_fitness = sum(w for c,w in scored_generation)
+	gene_pool = [(c, w / float(total_fitness)) for c,w in scored_generation]
+	return gene_pool
+
 # selects an organism to be a father based on its relative fitness
+# source: http://stackoverflow.com/questions/3679694/a-weighted-version-of-random-choice
 def select_father(gene_pool, mother):
-	# TODO
-	for g in gene_pool:
-		if g is not mother:
-			return g
+	total = sum(w for c, w in gene_pool)
+	r = random.uniform(0, total)
+	upto = 0
+	for c, w in gene_pool:
+		if upto + w >= r and c != mother:
+			return c
+		upto += w
+	print gene_pool
+	print "Diversity has been depleted"
+	assert False, "Shouldn't get here" # No more diversity left in the gene pool
 
 # generate the next generation of the algorithm
 def gen_next_generation(generation, target):
