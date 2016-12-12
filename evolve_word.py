@@ -2,6 +2,7 @@ import random
 
 # ---- Constants/Control Variables ----
 
+TARGET_PHRASE = "To be or not to be."
 SIZE_OF_GENERATION = 200 # number of organisms per generation
 MUTATION_RATE = .01 # Chance of a character randomly mutating
 MIN_CHAR = 63 # ' '
@@ -11,10 +12,10 @@ CHAR_RANGE = MAX_CHAR - MIN_CHAR
 # ---- Functions -----
 
 # fitness is the percentage of correct characters of an organism vs the target
-def fitness(organism, target):
+def fitness(organism):
     total_correct = 0
     for i in xrange(len(organism)):
-        if organism[i] == target[i]:
+        if organism[i] == TARGET_PHRASE[i]:
             total_correct += 1
     return total_correct / float(len(organism))
 
@@ -42,8 +43,8 @@ def gen_rand_org(length):
     return ''.join(organism)
 
 # return a list of tuples mapping organisms to their score
-def score_generation(generation, target):
-    return [(organism, fitness(organism, target)) for organism in generation]
+def score_generation(generation):
+    return [(organism, fitness(organism)) for organism in generation]
 
 # randomly mutates a character some percentage of the time
 def mutate(character, rate):
@@ -62,7 +63,7 @@ def breed(mother, father):
     child = [""] * len(mother)
     for i in xrange(len(mother)):
         # This line would always give the child the strongest attribute (unfair)
-        # child[i] = mother[i] if fitness(mother, target) >= fitness(father, target) else father[i]
+        # child[i] = mother[i] if fitness(mother) >= fitness(father) else father[i]
         child[i] = mother[i] if random.random() < .5 else father[i]
         child[i] = mutate(child[i], MUTATION_RATE)
 
@@ -89,14 +90,14 @@ def select_father(gene_pool, mother):
     assert False, "Shouldn't get here" # No more diversity left in the gene pool
 
 # generate the next generation of the algorithm
-def gen_next_generation(generation, target):
+def gen_next_generation(generation):
     if len(generation) is 0:
-        return gen_seed_generation(len(target))
+        return gen_seed_generation(len(TARGET_PHRASE))
     else:
         next_generation = [""] * SIZE_OF_GENERATION
 
         # score each organism based on its fitness
-        scored_generation = score_generation(generation, target)
+        scored_generation = score_generation(generation)
 
         # create the gene pool (roulette wheel)
         gene_pool = gen_gene_pool(scored_generation)
@@ -109,28 +110,28 @@ def gen_next_generation(generation, target):
         return next_generation
 
 # generates a status report
-def gen_status(generation, num_generations, target):
-    avg_fitness = sum(w for c,w in score_generation(generation, target)) / float(len(generation))
+def gen_status(generation, num_generations):
+    avg_fitness = sum(w for c,w in score_generation(generation)) / float(len(generation))
     return ("\nCurrent generation: %s | average fitness: %s | population size: %s" %
             (str(num_generations),
             str(avg_fitness),
             str(SIZE_OF_GENERATION)))
 
-# Use a genetic algorithm to generate the target word
-def run_genetic_word_finder(target):
+# Use a genetic algorithm to generate the target phrase
+def run_genetic_word_finder():
     num_generations = 0
     generation = []
     found = False
     while not found:
-        generation = gen_next_generation(generation, target)
+        generation = gen_next_generation(generation)
         num_generations += 1
 
         for i in generation:
             print i
 
-        print gen_status(generation, num_generations, target)
+        print gen_status(generation, num_generations)
 
-        if target in generation:
+        if TARGET_PHRASE in generation:
             found = True
 
     print "Target Found"
@@ -151,4 +152,6 @@ def run_genetic_word_finder(target):
 #for i in xrange(10,15):
 #   print gen_seed_generation(i)
 
-run_genetic_word_finder("To be or not to be.")
+# ---- Execute the program ----
+
+run_genetic_word_finder()
