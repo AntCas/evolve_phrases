@@ -149,4 +149,4 @@ def run_genetic_word_finder(target):
 #for i in xrange(10,15):
 #	print gen_seed_generation(i)
 
-print run_genetic_word_finder("To be or not to be.")
+run_genetic_word_finder("To be or not to be.")
