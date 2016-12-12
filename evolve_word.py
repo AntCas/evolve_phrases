@@ -2,7 +2,7 @@ import random
 
 # ---- Constants/Control Variables ----
 
-SIZE_OF_GENERATION = 200 # number of organisms per generation
+SIZE_OF_GENERATION = 1000 # number of organisms per generation
 MUTATION_RATE = .01 # Chance of a character randomly mutating
 MIN_CHAR = 63 # ' '
 MAX_CHAR = 122 # '~'
@@ -13,20 +13,12 @@ CHAR_RANGE = MAX_CHAR - MIN_CHAR
 # Calculate the fitness of a certain string (the organism) from the target string
 def fitness(organism, target):
 	fitness = 0 # fitness of the word
-	
-	# in this version of the algorithm the current organism and target must be same length
-	# this could be modified by assigning some weight to missing letters
-	if len(organism) != len(target): exit(1)
 
-	# Calculate the fitness by character
+	# fitness is the percentage of correct characters
 	for i in xrange(len(organism)):
-		char_fitness = 1.0 - (abs(float(ord(organism[i]))-float(ord(target[i]))) / float(CHAR_RANGE))
-		fitness += char_fitness
-
-	# total fitness for the oganism is the average fitness of each character
-	fitness = fitness / float(len(organism))
-
-	return fitness
+		if organism[i] == target[i]:
+			fitness += 1
+	return fitness / float(len(organism))
 
 # Generate the initial (seed) generation
 def gen_seed_generation(length):
@@ -160,4 +152,4 @@ print fitness("t", "t") # this should be 1.0 100% the same
 #for i in xrange(10,15):
 #	print gen_seed_generation(i)
 
-print run_genetic_word_finder("cat")
+print run_genetic_word_finder("To be or not to be.")
