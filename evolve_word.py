@@ -56,7 +56,7 @@ def score_generation(generation, target):
 def gen_gene_pool(scored_generation):
 	return scored_generation
 
-# mutates a character based on MUTATION_RATE
+# randomly mutates a character some percentage of the time specfied by the rate
 def mutate(character, rate):
 	if random.random() < rate:
 		return chr(random.randint(MIN_CHAR, MAX_CHAR))
@@ -64,17 +64,27 @@ def mutate(character, rate):
 		return character
 
 # breeds two organisms
-def breed(mother, father, target):
+def breed(mother, father):
 	if len(mother) != len(father):
 		print "LENGTH ERROR"
 		exit(1)
 
+	# A child randomly inherits each character from either the mother or the father
 	child = [""] * len(mother)
 	for i in xrange(len(mother)):
-		child[i] = mother[i] if fitness(mother, target) >= fitness(father, target) else father[i]
+		# This line would always give the child the strongest attribute (unfair)
+		# child[i] = mother[i] if fitness(mother, target) >= fitness(father, target) else father[i]
+		child[i] = mother[i] if random.random() < .5 else father[i]
 		child[i] = mutate(child[i], MUTATION_RATE)
 
 	return ''.join(child)
+
+# selects an organism to be a father based on its relative fitness
+def select_father(gene_pool, mother):
+	# TODO
+	for g in gene_pool:
+		if g is not mother:
+			return g
 
 # generate the next generation of the algorithm
 def gen_next_generation(generation, target):
@@ -83,15 +93,16 @@ def gen_next_generation(generation, target):
 	else:
 		next_generation = [""] * SIZE_OF_GENERATION
 
-		# score
+		# score each organism based on its fitness
 		scored_generation = score_generation(generation, target)
 
 		# create the gene pool (roulette wheel)
 		gene_pool = gen_gene_pool(scored_generation)
 
-		# breed
+		# breed each organism with a father in the gene pool
 		for i in xrange(len(generation)):
-			next_generation[i] = breed(i, gene_pool, target)
+			father = select_father(gene_pool, generation[i])
+			next_generation[i] = breed(generation[i], father)
 
 		return next_generation
 
