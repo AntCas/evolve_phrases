@@ -3,7 +3,7 @@ import random
 # ---- Constants/Control Variables ----
 
 SIZE_OF_GENERATION = 20 # number of organisms per generation
-MUTATION_RATE = .01 # Chance of a character randomly mutating
+MUTATION_RATE = .10 # Chance of a character randomly mutating
 MIN_CHAR = 32 # ' '
 MAX_CHAR = 126 # '~'
 CHAR_RANGE = MAX_CHAR - MIN_CHAR
@@ -74,7 +74,7 @@ def breed(mother, father):
 
 # assigns each organism a breeding potential based on its relative score
 def gen_gene_pool(scored_generation):
-	# each organism gets exaclty the share of the gene pool it contributes
+	# each organism gets exactly the share of the gene pool it contributes
 	total_fitness = sum(w for c,w in scored_generation)
 	gene_pool = [(c, w / float(total_fitness)) for c,w in scored_generation]
 	return gene_pool
@@ -86,7 +86,7 @@ def select_father(gene_pool, mother):
 	r = random.uniform(0, total)
 	upto = 0
 	for c, w in gene_pool:
-		if upto + w >= r and c != mother:
+		if upto + w >= r:
 			return c
 		upto += w
 	print gene_pool
@@ -123,7 +123,8 @@ def run_genetic_word_finder(target):
 		num_generations += 1
 
 		# print the current status of the algorithm
-		print "\nCurrent generation: " + str(num_generations)
+		avg_fitness = sum(w for c,w in score_generation(generation, target)) / float(len(generation))
+		print "\nCurrent generation: " + str(num_generations) + " | average fitness: " + str(avg_fitness)
 		for i in generation:
 			print i
 
@@ -148,4 +149,4 @@ print fitness("t", "t") # this should be 1.0 100% the same
 #for i in xrange(10,15):
 #	print gen_seed_generation(i)
 
-print run_genetic_word_finder("cat")
+print run_genetic_word_finder("cat and dog")
