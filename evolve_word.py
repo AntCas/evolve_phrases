@@ -57,6 +57,11 @@ def gen_gene_pool(scored_generation):
 	return scored_generation
 
 # mutates a character based on MUTATION_RATE
+def mutate(character, rate):
+	if random.random() < rate:
+		return chr(random.randint(MIN_CHAR, MAX_CHAR))
+	else:
+		return character
 
 # breeds two organisms
 def breed(mother, father, target):
