@@ -2,7 +2,7 @@ import random
 
 # ---- Constants/Control Variables ----
 
-TARGET_PHRASE = "To be or not to be."
+TARGET_PHRASE = "Christopher Look"
 SIZE_OF_GENERATION = 200 # number of organisms per generation
 MUTATION_RATE = .01 # Chance of a character randomly mutating
 MIN_CHAR = 63 # ' '
@@ -134,7 +134,9 @@ def run_genetic_word_finder():
         if TARGET_PHRASE in generation:
             found = True
 
-    print "Target Found"
+	#for i in generation:
+	#	print i
+    print "%s <-- Target Found" % (TARGET_PHRASE)
 
 # ---- Testing Section -----
 
